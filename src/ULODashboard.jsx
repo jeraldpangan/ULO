@@ -3,34 +3,21 @@ import { useState } from "react";
 const enrollmentHistory = [
   { semester: "2023-2024, 1st Semester", status: "Officially Enrolled", date: "August 8, 2023" },
   { semester: "2023-2024, 2nd Semester", status: "Officially Enrolled", date: "January 20, 2024" },
-  { semester: "2023-2024, Midyear", status: "Not Enlisted", date: "" },
+  { semester: "2023-2024, Midyear",      status: "Not Enlisted",        date: "" },
   { semester: "2024-2025, 1st Semester", status: "Officially Enrolled", date: "July 30, 2024" },
   { semester: "2024-2025, 2nd Semester", status: "Officially Enrolled", date: "January 19, 2025" },
-  { semester: "2024-2025, Midyear", status: "Officially Enrolled", date: "June 15, 2025" },
+  { semester: "2024-2025, Midyear",      status: "Officially Enrolled", date: "June 15, 2025" },
   { semester: "2025-2026, 1st Semester", status: "Officially Enrolled", date: "August 10, 2025" },
   { semester: "2025-2026, 2nd Semester", status: "Officially Enrolled", date: "January 19, 2026" },
-  { semester: "2025-2028, Midyear", status: "", date: "" },
+  { semester: "2025-2026, Midyear",      status: "", date: "" },
   { semester: "2026-2027, 1st Semester", status: "", date: "" },
   { semester: "2026-2027, 2nd Semester", status: "", date: "" },
 ];
 
 const statusLegend = [
-  {
-    status: "Not Enlisted",
-    color: "#e53e3e",
-    description: "You are not done with the Enlistment Process.",
-  },
-  {
-    status: "Will Not Enroll",
-    color: "#e53e3e",
-    description:
-      "You marked yourself as will not enroll for the semester OR you've been automatically mark as WILL NOT ENROLL because you have not done the enlistment process.",
-  },
-  {
-    status: "Officially Enrolled",
-    color: "#38a169",
-    description: "Your enrollment has been approved by the registrar.",
-  },
+  { status: "Not Enlisted",      color: "#e53e3e", description: "You are not done with the Enlistment Process." },
+  { status: "Will Not Enroll",   color: "#e53e3e", description: "You marked yourself as will not enroll for the semester OR you've been automatically marked as WILL NOT ENROLL because you have not done the enlistment process." },
+  { status: "Officially Enrolled", color: "#38a169", description: "Your enrollment has been approved by the registrar." },
 ];
 
 const navIcons = [
@@ -50,7 +37,7 @@ const navIcons = [
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
         <rect x="3" y="3" width="18" height="18" rx="2" />
-        <line x1="8" y1="9" x2="16" y2="9" />
+        <line x1="8" y1="9"  x2="16" y2="9"  />
         <line x1="8" y1="13" x2="16" y2="13" />
         <line x1="8" y1="17" x2="12" y2="17" />
       </svg>
@@ -66,7 +53,7 @@ const navIcons = [
     ),
   },
   {
-    id: "profile",
+    id: "account",
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
@@ -80,29 +67,23 @@ function StatusBadge({ status }) {
   if (!status) return null;
   const colors = {
     "Officially Enrolled": { bg: "#f0fff4", color: "#38a169", border: "#c6f6d5" },
-    "Not Enlisted": { bg: "#fff5f5", color: "#e53e3e", border: "#fed7d7" },
-    "Will Not Enroll": { bg: "#fff5f5", color: "#e53e3e", border: "#fed7d7" },
+    "Not Enlisted":        { bg: "#fff5f5", color: "#e53e3e", border: "#fed7d7" },
+    "Will Not Enroll":     { bg: "#fff5f5", color: "#e53e3e", border: "#fed7d7" },
   };
   const style = colors[status] || { bg: "#f7fafc", color: "#718096", border: "#e2e8f0" };
   return (
-    <span
-      style={{
-        background: style.bg,
-        color: style.color,
-        border: `1px solid ${style.border}`,
-        borderRadius: "20px",
-        padding: "2px 10px",
-        fontSize: "11px",
-        fontWeight: "700",
-        whiteSpace: "nowrap",
-      }}
-    >
+    <span style={{
+      background: style.bg, color: style.color,
+      border: `1px solid ${style.border}`,
+      borderRadius: "20px", padding: "2px 10px",
+      fontSize: "11px", fontWeight: "700", whiteSpace: "nowrap",
+    }}>
       {status}
     </span>
   );
 }
 
-export default function ULODashboard() {
+export default function ULODashboard({ onNavigate }) {
   const [activeNav, setActiveNav] = useState("dashboard");
 
   return (
@@ -128,7 +109,19 @@ export default function ULODashboard() {
                 ...styles.navBtn,
                 ...(activeNav === item.id ? styles.navBtnActive : {}),
               }}
-              onClick={() => setActiveNav(item.id)}
+              onClick={() => {
+  if (item.id === "grades") {
+    onNavigate("courses");
+  } else if (item.id === "enrollment") {
+    onNavigate("enrollment");
+  } else if (item.id === "account") {
+    onNavigate("account");
+  } else if (item.id === "dashboard") {
+    onNavigate("dashboard");
+  } else {
+    setActiveNav(item.id);
+  }
+}}
               title={item.id}
             >
               {item.icon}
@@ -137,7 +130,11 @@ export default function ULODashboard() {
         </nav>
 
         <div style={styles.sidebarBottom}>
-          <button style={styles.logoutBtn} title="Logout">
+          <button
+            style={styles.logoutBtn}
+            title="Logout"
+            onClick={() => onNavigate("login")}
+          >
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
               <polyline points="16 17 21 12 16 7" />
@@ -149,17 +146,14 @@ export default function ULODashboard() {
 
       {/* Main Content */}
       <main style={styles.main}>
-        {/* Header */}
         <div style={styles.header}>
           <h1 style={styles.pageTitle}>Dashboard</h1>
           <div style={styles.headerLine} />
         </div>
 
-        {/* Content Grid */}
         <div style={styles.grid}>
           {/* Left Column */}
           <div style={styles.leftCol}>
-            {/* Announcement 1 */}
             <div style={styles.card}>
               <h2 style={styles.cardTitle}>Announcement</h2>
               <div style={styles.divider} />
@@ -172,7 +166,6 @@ export default function ULODashboard() {
               </div>
             </div>
 
-            {/* Announcement 2 */}
             <div style={{ ...styles.card, flex: 1 }}>
               <h2 style={styles.cardTitle}>Announcement</h2>
               <div style={styles.divider} />
@@ -181,7 +174,6 @@ export default function ULODashboard() {
 
           {/* Right Column */}
           <div style={styles.rightCol}>
-            {/* Enrollment History */}
             <div style={styles.card}>
               <h2 style={styles.cardTitle}>Enrollment History</h2>
               <div style={styles.tableWrapper}>
@@ -210,7 +202,6 @@ export default function ULODashboard() {
               </div>
             </div>
 
-            {/* Status Legend */}
             <div style={styles.card}>
               <table style={styles.table}>
                 <thead>
@@ -248,175 +239,31 @@ export default function ULODashboard() {
 }
 
 const styles = {
-  app: {
-    display: "flex",
-    minHeight: "100vh",
-    fontFamily: "'Nunito', sans-serif",
-    background: "#f7f8fc",
-  },
-  sidebar: {
-    width: "64px",
-    background: "#1a2056",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    paddingTop: "16px",
-    paddingBottom: "16px",
-    position: "fixed",
-    top: 0,
-    left: 0,
-    height: "100vh",
-    zIndex: 100,
-  },
-  sidebarTop: {
-    marginBottom: "24px",
-  },
-  logoBox: {
-    width: "40px",
-    height: "40px",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  nav: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "6px",
-    flex: 1,
-  },
-  navBtn: {
-    width: "44px",
-    height: "44px",
-    borderRadius: "10px",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    color: "#8892c8",
-    transition: "all 0.18s",
-  },
-  navBtnActive: {
-    background: "#f5c842",
-    color: "#1a2056",
-  },
-  sidebarBottom: {
-    marginTop: "auto",
-  },
-  logoutBtn: {
-    width: "44px",
-    height: "44px",
-    borderRadius: "10px",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    color: "#e53e3e",
-    background: "rgba(229,62,62,0.12)",
-  },
-  main: {
-    marginLeft: "64px",
-    flex: 1,
-    padding: "28px 32px",
-    minHeight: "100vh",
-  },
-  header: {
-    display: "flex",
-    alignItems: "center",
-    gap: "16px",
-    marginBottom: "24px",
-  },
-  pageTitle: {
-    fontSize: "26px",
-    fontWeight: "800",
-    color: "#1a2056",
-    whiteSpace: "nowrap",
-  },
-  headerLine: {
-    flex: 1,
-    height: "1.5px",
-    background: "#e2e8f0",
-    borderRadius: "2px",
-  },
-  grid: {
-    display: "grid",
-    gridTemplateColumns: "1fr 1.5fr",
-    gap: "20px",
-    alignItems: "start",
-  },
-  leftCol: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "20px",
-    height: "100%",
-  },
-  rightCol: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "20px",
-  },
-  card: {
-    background: "#fff",
-    borderRadius: "12px",
-    border: "2px solid #f5c842",
-    padding: "18px 18px 14px",
-    display: "flex",
-    flexDirection: "column",
-    gap: "10px",
-  },
-  cardTitle: {
-    fontSize: "16px",
-    fontWeight: "800",
-    color: "#f5c842",
-    letterSpacing: "-0.2px",
-  },
-  divider: {
-    height: "1.5px",
-    background: "#e2e8f0",
-    borderRadius: "2px",
-    marginBottom: "4px",
-  },
-  emptyState: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: "32px 0",
-    gap: "10px",
-  },
-  emptyText: {
-    color: "#a0aec0",
-    fontSize: "14px",
-    fontWeight: "600",
-  },
-  tableWrapper: {
-    overflowX: "auto",
-    borderRadius: "8px",
-    border: "1px solid #e2e8f0",
-  },
-  table: {
-    width: "100%",
-    borderCollapse: "collapse",
-    fontSize: "12px",
-  },
-  th: {
-    background: "#f7f8fc",
-    color: "#4a5568",
-    fontWeight: "700",
-    padding: "9px 12px",
-    textAlign: "left",
-    borderBottom: "1.5px solid #e2e8f0",
-    whiteSpace: "nowrap",
-    fontSize: "12px",
-  },
-  td: {
-    padding: "8px 12px",
-    color: "#2d3748",
-    fontWeight: "600",
-    fontSize: "12px",
-    borderBottom: "1px solid #f0f0f0",
-  },
-  trEven: {
-    background: "#fff",
-  },
-  trOdd: {
-    background: "#fafbff",
-  },
+  app:          { display: "flex", minHeight: "100vh", fontFamily: "'Nunito', sans-serif", background: "#f7f8fc" },
+  sidebar:      { width: "64px", background: "#1a2056", display: "flex", flexDirection: "column", alignItems: "center", paddingTop: "16px", paddingBottom: "16px", position: "fixed", top: 0, left: 0, height: "100vh", zIndex: 100 },
+  sidebarTop:   { marginBottom: "24px" },
+  logoBox:      { width: "40px", height: "40px", display: "flex", alignItems: "center", justifyContent: "center" },
+  nav:          { display: "flex", flexDirection: "column", gap: "6px", flex: 1 },
+  navBtn:       { width: "44px", height: "44px", borderRadius: "10px", display: "flex", alignItems: "center", justifyContent: "center", color: "#8892c8", transition: "all 0.18s" },
+  navBtnActive: { background: "#f5c842", color: "#1a2056" },
+  sidebarBottom:{ marginTop: "auto" },
+  logoutBtn:    { width: "44px", height: "44px", borderRadius: "10px", display: "flex", alignItems: "center", justifyContent: "center", color: "#e53e3e", background: "rgba(229,62,62,0.12)" },
+  main:         { marginLeft: "64px", flex: 1, padding: "28px 32px", minHeight: "100vh" },
+  header:       { display: "flex", alignItems: "center", gap: "16px", marginBottom: "24px" },
+  pageTitle:    { fontSize: "26px", fontWeight: "800", color: "#1a2056", whiteSpace: "nowrap" },
+  headerLine:   { flex: 1, height: "1.5px", background: "#e2e8f0", borderRadius: "2px" },
+  grid:         { display: "grid", gridTemplateColumns: "1fr 1.5fr", gap: "20px", alignItems: "start" },
+  leftCol:      { display: "flex", flexDirection: "column", gap: "20px", height: "100%" },
+  rightCol:     { display: "flex", flexDirection: "column", gap: "20px" },
+  card:         { background: "#fff", borderRadius: "12px", border: "2px solid #f5c842", padding: "18px 18px 14px", display: "flex", flexDirection: "column", gap: "10px" },
+  cardTitle:    { fontSize: "16px", fontWeight: "800", color: "#f5c842", letterSpacing: "-0.2px" },
+  divider:      { height: "1.5px", background: "#e2e8f0", borderRadius: "2px", marginBottom: "4px" },
+  emptyState:   { display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "32px 0", gap: "10px" },
+  emptyText:    { color: "#a0aec0", fontSize: "14px", fontWeight: "600" },
+  tableWrapper: { overflowX: "auto", borderRadius: "8px", border: "1px solid #e2e8f0" },
+  table:        { width: "100%", borderCollapse: "collapse", fontSize: "12px" },
+  th:           { background: "#f7f8fc", color: "#4a5568", fontWeight: "700", padding: "9px 12px", textAlign: "left", borderBottom: "1.5px solid #e2e8f0", whiteSpace: "nowrap", fontSize: "12px" },
+  td:           { padding: "8px 12px", color: "#2d3748", fontWeight: "600", fontSize: "12px", borderBottom: "1px solid #f0f0f0" },
+  trEven:       { background: "#fff" },
+  trOdd:        { background: "#fafbff" },
 };

@@ -1,13 +1,8 @@
 import { useState } from "react"
-import ULOStudentPortal from './ULOStudentPortal'
-import ULODashboard from './ULODashboard'
+import { routes } from "./routes"
 
 export default function App() {
   const [page, setPage] = useState("login")
-
-  if (page === "dashboard") {
-    return <ULODashboard />
-  }
-
-  return <ULOStudentPortal onLogin={() => setPage("dashboard")} />
+  const navigate = (p) => setPage(p)
+  return routes[page]?.(navigate) ?? <div>404: unknown page "{page}"</div>
 }
