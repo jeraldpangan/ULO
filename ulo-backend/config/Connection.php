@@ -6,9 +6,9 @@ define("PASSWORD", "balmondiyotmiya");
 define("DB", "db_student_service");
 define("CHARSET", "utf8mb4");
 class Connection {
-    static $connection = false;
+    private static ?\PDO $connection = null;
 
-    public function connect(){
+    public function connect(): \PDO {
     $cnString = "mysql:host=" . SERVER . ";dbname=" . DB . ";charset=" . CHARSET;
     $options = [
         \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
@@ -19,12 +19,14 @@ class Connection {
     ];
 
     try {
-        static::$connection = new \PDO($cnString, USER, PASSWORD, $options);
+        if (self::$connection === null) {
+            self::$connection = new \PDO($cnString, USER, PASSWORD, $options);
+        }
     }
     catch(\PDOException $er){
-        echo "Connection failed: " . $er->getMessage();
+        throw new Exception("Database connection failed: " . $er->getMessage());
     }
-    return static::$connection;
+    return self::$connection;
     }
 
     public function closeConnection(){
